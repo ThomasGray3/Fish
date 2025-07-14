@@ -11,7 +11,7 @@ import SwiftUI
 struct FishApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            BaseTabView()
         }
     }
 }
