@@ -13,7 +13,7 @@ struct CatchesView: View {
     @Query var catches: [Fish]
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             List {
                 ForEach(catches) { fish in
                     Text(fish.species)

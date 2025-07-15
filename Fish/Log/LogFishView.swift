@@ -7,11 +7,13 @@
 
 import SwiftUI
 import SwiftData
+import CoreLocationUI
 
 struct LogFishView: View {
     
     @Environment(\.modelContext) var modelContext
     
+    @State private var showLocationPopover = false
     @State private var species: String = ""
     @State private var length: Fish.Measurement = .init(value: nil, unit: .cm)
     @State private var weight: Fish.Measurement = .init(value: nil, unit: .lbs)
@@ -19,11 +21,13 @@ struct LogFishView: View {
     @State private var date: Date = Date()
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack {
                 Form {
                     Section(header: Text("Fish Data")) {
+                        // Species
                         TextField("Species", text: $species)
+                        // Length
                         HStack {
                             Text("Length")
                             Spacer()
@@ -39,6 +43,7 @@ struct LogFishView: View {
                             }
                             .pickerStyle(.segmented)
                         }
+                        // Weight
                         HStack {
                             Text("Weight")
                             Spacer()
@@ -55,7 +60,15 @@ struct LogFishView: View {
                             }
                             .pickerStyle(.segmented)
                         }
-                        TextField("Location", text: $location)
+                        // Location
+                        HStack {
+                            Button("Location") {
+                                showLocationPopover.toggle()
+                            }.popover(isPresented: $showLocationPopover) {
+                                LocationView()
+                            }
+                        }
+                        // Date
                         DatePicker("Date Caught",
                                    selection: $date,
                                    displayedComponents: [.date,
@@ -74,8 +87,8 @@ struct LogFishView: View {
                         .disabled(species.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                         
                     }
-                    .navigationTitle("Log Your Catch")
                 }
+                .navigationTitle("Log Your Catch")
             }
         }
     }

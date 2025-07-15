@@ -10,15 +10,10 @@ import SwiftUI
 struct BaseTabView: View {
     var body: some View {
         TabView {
-            EmptyView()
+            ExploreView()
                 .tabItem {
                     Image(systemName: "map")
                     Text("Explore")
-                }
-            EmptyView()
-                .tabItem {
-                    Image(systemName: "camera.viewfinder")
-                    Text("Identify Fish")
                 }
             LogFishView()
                 .tabItem {
@@ -28,7 +23,12 @@ struct BaseTabView: View {
             CatchesView()
                 .tabItem {
                     Image(systemName: "fish")
-                    Text("Your Catches")
+                    Text("Catches")
+                }
+            TripsView()
+                .tabItem {
+                    Image(systemName: "calendar")
+                    Text("Trips")
                 }
         }
     }
