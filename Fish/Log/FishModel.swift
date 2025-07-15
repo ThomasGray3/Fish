@@ -25,7 +25,7 @@ class Fish {
     }
     
     struct Measurement: Codable, Hashable {
-        var value: Double
+        var value: Double?
         var unit: Unit
     }
     
