@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct FishApp: App {
@@ -13,5 +14,6 @@ struct FishApp: App {
         WindowGroup {
             BaseTabView()
         }
+        .modelContainer(for: Fish.self)
     }
 }

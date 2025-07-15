@@ -10,35 +10,26 @@ import SwiftUI
 struct BaseTabView: View {
     var body: some View {
         TabView {
-            FirstView()
+            EmptyView()
                 .tabItem {
                     Image(systemName: "map")
                     Text("Explore")
                 }
-            FirstView()
+            EmptyView()
+                .tabItem {
+                    Image(systemName: "camera.viewfinder")
+                    Text("Identify Fish")
+                }
+            LogFishView()
                 .tabItem {
                     Image(systemName: "plus.app")
                     Text("Log Catch")
                 }
-            FirstView()
-                .tabItem {
-                    Image(systemName: "camera.viewfinder")
-                    Text("Scan")
-                }
-            FirstView()
+            CatchesView()
                 .tabItem {
                     Image(systemName: "fish")
-                    Text("Database")
+                    Text("Your Catches")
                 }
-        }
-    }
-}
-
-struct FirstView: View {
-    var body: some View {
-        NavigationView {
-            Text("Home Screen")
-                .navigationTitle("Home")
         }
     }
 }
