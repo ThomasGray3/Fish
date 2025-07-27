@@ -28,8 +28,8 @@ enum SortField: String, CaseIterable, Identifiable {
         switch self {
         case .date: SortDescriptor(\Fish.date, order: order)
         case .species: SortDescriptor(\Fish.species, order: order)
-        case .length: SortDescriptor(\Fish.length.value, order: order)
-        case .weight: SortDescriptor(\Fish.weight.value, order: order)
+        case .length: SortDescriptor(\Fish.length, order: order)
+        case .weight: SortDescriptor(\Fish.weight, order: order)
         }
     }
 }

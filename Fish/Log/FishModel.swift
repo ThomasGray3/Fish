@@ -12,14 +12,19 @@ import MapKit
 @Model
 class Fish {
     var species: String
-    var length: Measurement
-    var weight: Measurement
+    var length: Double?
+    var weight: Double?
     var latatude: Double?
     var longitude: Double?
     var date: Date
     var favourite: Bool = false
     
-    init(species: String, length: Measurement, weight: Measurement, latatude: Double?, longitude: Double?, date: Date) {
+    init(species: String,
+         length: Double?,
+         weight: Double?,
+         latatude: Double?,
+         longitude: Double?,
+         date: Date) {
         self.species = species
         self.length = length
         self.weight = weight
@@ -30,21 +35,5 @@ class Fish {
     
     func updateFavourite() {
         favourite.toggle()
-    }
-    
-    struct Measurement: Codable, Hashable, Comparable {
-        static func < (lhs: Fish.Measurement, rhs: Fish.Measurement) -> Bool {
-            lhs.value ?? 0 < rhs.value ?? 0
-        }
-        
-        var value: Double?
-        var unit: Unit
-    }
-    
-    enum Unit: String, Codable, Hashable {
-        case lbs = "lbs"
-        case kg = "kg"
-        case cm = "cm"
-        case inch = "in"
     }
 }

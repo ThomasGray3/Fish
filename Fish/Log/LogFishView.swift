@@ -16,8 +16,8 @@ struct LogFishView: View {
     
     @State private var showLocationPopover = false
     @State private var species: String = ""
-    @State private var length: Fish.Measurement = .init(value: nil, unit: .cm)
-    @State private var weight: Fish.Measurement = .init(value: nil, unit: .lbs)
+    @State private var length: Double?
+    @State private var weight: Double?
     @State private var location: CLLocationCoordinate2D?
     @State private var date: Date = Date()
     
@@ -32,34 +32,25 @@ struct LogFishView: View {
                         HStack {
                             Text("Length")
                             Spacer()
-                            TextField("0.0",
-                                      value: $length.value,
-                                      format: .number)
+                            TextField("",
+                                      value: $length,
+                                      format: .number,
+                                      prompt: Text("0.0"))
                             .keyboardType(.decimalPad)
                             .multilineTextAlignment(.trailing)
                             .padding(.trailing, 10)
-                            Picker("", selection: $length.unit) {
-                                Text(Fish.Unit.cm.rawValue).tag(Fish.Unit.cm)
-                                Text(Fish.Unit.inch.rawValue).tag(Fish.Unit.inch)
-                            }
-                            .pickerStyle(.segmented)
                         }
                         // Weight
                         HStack {
                             Text("Weight")
                             Spacer()
                             TextField("",
-                                      value: $weight.value,
+                                      value: $weight,
                                       format: .number,
                                       prompt: Text("0.0"))
                             .keyboardType(.decimalPad)
                             .multilineTextAlignment(.trailing)
                             .padding(.trailing, 10)
-                            Picker("", selection: $weight.unit) {
-                                Text(Fish.Unit.lbs.rawValue).tag(Fish.Unit.lbs)
-                                Text(Fish.Unit.kg.rawValue).tag(Fish.Unit.kg)
-                            }
-                            .pickerStyle(.segmented)
                         }
                         // Location
                         HStack {
@@ -78,19 +69,12 @@ struct LogFishView: View {
                         // Date
                         DatePicker("Date Caught",
                                    selection: $date,
-                                   displayedComponents: [.date,
-                                                         .hourAndMinute])
-                        
+                                   displayedComponents: [.date, .hourAndMinute])
                     }
+                    // Submit
                     Section {
                         Button("Save Catch") {
-                            modelContext.insert(
-                                Fish(species: species,
-                                     length: length,
-                                     weight: weight,
-                                     latatude: location?.latitude,
-                                     longitude: location?.longitude,
-                                     date: date))
+                            submitForm()
                         }
                         .disabled(species.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                         
@@ -99,6 +83,26 @@ struct LogFishView: View {
                 .navigationTitle("Log Your Catch")
             }
         }
+    }
+    
+    private func submitForm() {
+        modelContext.insert(
+            Fish(species: species,
+                 length: length,
+                 weight: weight,
+                 latatude: location?.latitude,
+                 longitude: location?.longitude,
+                 date: date))
+        resetForm()
+    }
+    
+    private func resetForm() {
+        showLocationPopover = false
+        species = ""
+        length = 0.0
+        weight = 0.0
+        location = nil
+        date = Date()
     }
 }
 

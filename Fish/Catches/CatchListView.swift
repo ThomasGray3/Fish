@@ -23,10 +23,10 @@ struct CatchListView: View {
                 }
                 Spacer()
                 
-                if let weight = fish.weight.value {
+                if let weight = fish.weight {
                     DetailsView(imageName: "scalemass", detailText: weight.toString())
                 }
-                if let length = fish.length.value {
+                if let length = fish.length {
                     DetailsView(imageName: "ruler", detailText: length.toString())
                 }
             }
@@ -55,8 +55,8 @@ struct CatchListView: View {
 
 #Preview {
     CatchListView(fish: Fish(species: "Trout",
-                             length: Fish.Measurement(value: 50.4, unit: .cm),
-                             weight: Fish.Measurement(value: 6, unit: .lbs),
+                             length: 50.4,
+                             weight: 6.3,
                              latatude: nil,
                              longitude: nil,
                              date: Date()),
