@@ -20,7 +20,7 @@ struct BaseTabView: View {
                     Image(systemName: "plus.app")
                     Text("Log Catch")
                 }
-            CatchesView(sort: SortDescriptor(\Fish.date))
+            CatchesView()
                 .tabItem {
                     Image(systemName: "fish")
                     Text("Catches")

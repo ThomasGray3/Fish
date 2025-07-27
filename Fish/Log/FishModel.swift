@@ -12,13 +12,13 @@ import MapKit
 @Model
 class Fish {
     var species: String
-    var length: Measurement?
-    var weight: Measurement?
+    var length: Measurement
+    var weight: Measurement
     var latatude: Double?
     var longitude: Double?
     var date: Date
     
-    init(species: String, length: Measurement?, weight: Measurement?, latatude: Double?, longitude: Double?, date: Date) {
+    init(species: String, length: Measurement, weight: Measurement, latatude: Double?, longitude: Double?, date: Date) {
         self.species = species
         self.length = length
         self.weight = weight

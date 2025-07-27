@@ -10,76 +10,34 @@ import SwiftData
 
 struct CatchesView: View {
 
-    enum SortField: String, CaseIterable {
-        case date = "Date"
-        case species = "Species"
-        case length = "Length"
-        case weight = "Weight"
-    }
-    
-    @Environment(\.modelContext) var modelContext
     @State private var sortField = SortDescriptor(\Fish.date)
     @State private var sortOrder: SortOrder = .forward
-    @Query private var catches: [Fish]
-    
-    init(sort: SortDescriptor<Fish>) {
-        _catches = Query(sort: [sort])
-    }
+    @State private var searchText: String = ""
     
     var body: some View {
         NavigationStack {
-            List {
-                ForEach(catches) { fish in
-                    Text(fish.species)
-                }
-                .onDelete { index in
-                    deteleCatch(at: index)
-                }
-            }
+            CatchesListView(sort: sortField, search: searchText)
             .navigationTitle("Your Catches")
+            .searchable(text: $searchText)
             .toolbar {
-                Menu {
+                Menu("", systemImage: "arrow.up.arrow.down") {
                     Picker("Sort", selection: $sortField) {
                         Text("Date")
                             .tag(SortDescriptor(\Fish.date))
-                        Text("Name")
+                        Text("Species")
                             .tag(SortDescriptor(\Fish.species))
                         Text("Length")
-                            .tag(SortDescriptor(\Fish.length))
+                            .tag(SortDescriptor(\Fish.length.value))
                         Text("Weight")
-                            .tag(SortDescriptor(\Fish.weight))
+                            .tag(SortDescriptor(\Fish.weight.value))
                     }
                     .pickerStyle(.inline)
-                    
-                    Divider()
-                    Button(sortOrder == .reverse ? "Descending" : "Ascending") {
-                        
-                    }
-                } label: {
-                    Image(systemName: "arrow.up.arrow.down.circle")
                 }
             }
-        }
-    }
-    
-    
-    private func sortIcon(for field: SortField) -> String {
-        switch field {
-        case .species: return "fish"
-        case .length: return "ruler"
-        case .weight: return "scalemass"
-        case .date: return "calendar"
-        }
-    }
-    
-    private func deteleCatch(at indexSet: IndexSet) {
-        for index in indexSet {
-            let fish = catches[index]
-            modelContext.delete(fish)
         }
     }
 }
 
 #Preview {
-    CatchesView(sort: SortDescriptor(\Fish.date))
+    CatchesView()
 }
