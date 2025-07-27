@@ -15,11 +15,7 @@ struct CatchesListView: View {
     
     init(sort: SortDescriptor<Fish>, search: String) {
         _catches = Query(filter: #Predicate {
-            if search.isEmpty {
-                return true
-            } else {
-                return $0.species.localizedStandardContains(search)
-            }
+            search.isEmpty ? true : $0.species.localizedStandardContains(search)
         }, sort: [sort])
     }
 
