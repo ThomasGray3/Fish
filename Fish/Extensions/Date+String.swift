@@ -1,5 +1,5 @@
 //
-//  String+Date.swift
+//  Date+String.swift
 //  Fish
 //
 //  Created by Thomas Gray on 27/07/2025.
@@ -7,12 +7,12 @@
 
 import Foundation
 
-extension String {
+extension Date {
 
-    func date() -> Date? {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .medium
-        dateFormatter.timeStyle = .short
-        return dateFormatter.date(from: self)
+    var string: String? {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        return formatter.string(from: self)
     }
 }

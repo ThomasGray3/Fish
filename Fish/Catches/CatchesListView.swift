@@ -12,17 +12,19 @@ struct CatchesListView: View {
     
     @Environment(\.modelContext) var modelContext
     @Query private var catches: [Fish]
+    @State private var sort: SortField
     
-    init(sort: SortDescriptor<Fish>, search: String) {
+    init(sort: SortField, order: SortOrder, search: String) {
+        self.sort = sort
         _catches = Query(filter: #Predicate {
             search.isEmpty ? true : $0.species.localizedStandardContains(search)
-        }, sort: [sort])
+        }, sort: [sort.sortDescriptor(order: order)])
     }
 
     var body: some View {
         List {
             ForEach(catches) { fish in
-                Text(fish.species)
+                CatchListView(fish: fish, sort: sort)
             }
             .onDelete { index in
                 deteleCatch(at: index)
@@ -39,5 +41,5 @@ struct CatchesListView: View {
 }
 
 #Preview {
-    CatchesListView(sort: SortDescriptor(\Fish.date), search: "")
+    CatchesListView(sort: .date, order: .forward, search: "")
 }
