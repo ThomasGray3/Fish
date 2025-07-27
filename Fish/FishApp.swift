@@ -10,10 +10,12 @@ import SwiftData
 
 @main
 struct FishApp: App {
+    @State var locationManager = LocationManager()
     var body: some Scene {
         WindowGroup {
             BaseTabView()
         }
         .modelContainer(for: Fish.self)
+        .environment(locationManager)
     }
 }

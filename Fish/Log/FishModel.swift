@@ -7,20 +7,23 @@
 
 import Foundation
 import SwiftData
+import MapKit
 
 @Model
 class Fish {
     var species: String
-    var length: Measurement
-    var weight: Measurement
-    var location: String
+    var length: Measurement?
+    var weight: Measurement?
+    var latatude: Double?
+    var longitude: Double?
     var date: Date
     
-    init(species: String, length: Measurement, weight: Measurement, location: String, date: Date) {
+    init(species: String, length: Measurement?, weight: Measurement?, latatude: Double?, longitude: Double?, date: Date) {
         self.species = species
         self.length = length
         self.weight = weight
-        self.location = location
+        self.latatude = latatude
+        self.longitude = longitude
         self.date = date
     }
     

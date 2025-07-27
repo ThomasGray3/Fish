@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import MapKit
 import SwiftData
 import CoreLocationUI
 
@@ -17,7 +18,7 @@ struct LogFishView: View {
     @State private var species: String = ""
     @State private var length: Fish.Measurement = .init(value: nil, unit: .cm)
     @State private var weight: Fish.Measurement = .init(value: nil, unit: .lbs)
-    @State private var location: String = ""
+    @State private var location: CLLocationCoordinate2D?
     @State private var date: Date = Date()
     
     var body: some View {
@@ -65,7 +66,13 @@ struct LogFishView: View {
                             Button("Location") {
                                 showLocationPopover.toggle()
                             }.popover(isPresented: $showLocationPopover) {
-                                LocationView()
+                                LocationView(showPopover: $showLocationPopover) { location in
+                                    self.location = location
+                                }
+                            }
+                            Spacer()
+                            if location != nil {
+                                Text("Marked location")
                             }
                         }
                         // Date
@@ -81,7 +88,8 @@ struct LogFishView: View {
                                 Fish(species: species,
                                      length: length,
                                      weight: weight,
-                                     location: location,
+                                     latatude: location?.latitude,
+                                     longitude: location?.longitude,
                                      date: date))
                         }
                         .disabled(species.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
@@ -96,4 +104,5 @@ struct LogFishView: View {
 
 #Preview {
     LogFishView()
+        .environment(LocationManager())
 }
