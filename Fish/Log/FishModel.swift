@@ -27,7 +27,11 @@ class Fish {
         self.date = date
     }
     
-    struct Measurement: Codable, Hashable {
+    struct Measurement: Codable, Hashable, Comparable {
+        static func < (lhs: Fish.Measurement, rhs: Fish.Measurement) -> Bool {
+            lhs.value ?? 0 < rhs.value ?? 0
+        }
+        
         var value: Double?
         var unit: Unit
     }

@@ -18,9 +18,13 @@ struct CatchesView: View {
     }
     
     @Environment(\.modelContext) var modelContext
-    @State private var selectedSortField: SortField = .date
-    @State private var sortAscending: Bool = true
-    @Query var catches: [Fish]
+    @State private var sortField = SortDescriptor(\Fish.date)
+    @State private var sortOrder: SortOrder = .forward
+    @Query private var catches: [Fish]
+    
+    init(sort: SortDescriptor<Fish>) {
+        _catches = Query(sort: [sort])
+    }
     
     var body: some View {
         NavigationStack {
@@ -35,21 +39,24 @@ struct CatchesView: View {
             .navigationTitle("Your Catches")
             .toolbar {
                 Menu {
-                    ForEach(SortField.allCases, id: \.self) { field in
-                        Button {
-                            selectedSortField = field
-                        } label: {
-                            Label("Sort by \(field.rawValue)", systemImage: sortIcon(for: field))
-                        }
+                    Picker("Sort", selection: $sortField) {
+                        Text("Date")
+                            .tag(SortDescriptor(\Fish.date))
+                        Text("Name")
+                            .tag(SortDescriptor(\Fish.species))
+                        Text("Length")
+                            .tag(SortDescriptor(\Fish.length))
+                        Text("Weight")
+                            .tag(SortDescriptor(\Fish.weight))
                     }
+                    .pickerStyle(.inline)
                     
                     Divider()
-                    Button(sortAscending ? "Descending" : "Ascending") {
-                        sortAscending.toggle()
+                    Button(sortOrder == .reverse ? "Descending" : "Ascending") {
+                        
                     }
                 } label: {
                     Image(systemName: "arrow.up.arrow.down.circle")
-                    Text(selectedSortField.rawValue)
                 }
             }
         }
@@ -74,5 +81,5 @@ struct CatchesView: View {
 }
 
 #Preview {
-    CatchesView()
+    CatchesView(sort: SortDescriptor(\Fish.date))
 }
