@@ -23,65 +23,63 @@ struct LogFishView: View {
     
     var body: some View {
         NavigationStack {
-            VStack {
-                Form {
-                    Section(header: Text("Fish Data")) {
-                        // Species
-                        TextField("Species", text: $species)
-                        // Length
-                        HStack {
-                            Text("Length")
-                            Spacer()
-                            TextField("",
-                                      value: $length,
-                                      format: .number,
-                                      prompt: Text("0.0"))
-                            .keyboardType(.decimalPad)
-                            .multilineTextAlignment(.trailing)
-                            .padding(.trailing, 10)
-                        }
-                        // Weight
-                        HStack {
-                            Text("Weight")
-                            Spacer()
-                            TextField("",
-                                      value: $weight,
-                                      format: .number,
-                                      prompt: Text("0.0"))
-                            .keyboardType(.decimalPad)
-                            .multilineTextAlignment(.trailing)
-                            .padding(.trailing, 10)
-                        }
-                        // Location
-                        HStack {
-                            Button("Location") {
-                                showLocationPopover.toggle()
-                            }.popover(isPresented: $showLocationPopover) {
-                                LocationView(showPopover: $showLocationPopover) { location in
-                                    self.location = location
-                                }
-                            }
-                            Spacer()
-                            if location != nil {
-                                Text("Marked location")
+            Form {
+                Section(header: Text("Fish Data")) {
+                    // Species
+                    TextField("Species", text: $species)
+                    // Length
+                    HStack {
+                        Text("Length")
+                        Spacer()
+                        TextField("",
+                                  value: $length,
+                                  format: .number,
+                                  prompt: Text("0.0"))
+                        .keyboardType(.decimalPad)
+                        .multilineTextAlignment(.trailing)
+                        .padding(.trailing, 10)
+                    }
+                    // Weight
+                    HStack {
+                        Text("Weight")
+                        Spacer()
+                        TextField("",
+                                  value: $weight,
+                                  format: .number,
+                                  prompt: Text("0.0"))
+                        .keyboardType(.decimalPad)
+                        .multilineTextAlignment(.trailing)
+                        .padding(.trailing, 10)
+                    }
+                    // Location
+                    HStack {
+                        Button("Location") {
+                            showLocationPopover.toggle()
+                        }.popover(isPresented: $showLocationPopover) {
+                            LocationView(showPopover: $showLocationPopover) { location in
+                                self.location = location
                             }
                         }
-                        // Date
-                        DatePicker("Date Caught",
-                                   selection: $date,
-                                   displayedComponents: [.date, .hourAndMinute])
-                    }
-                    // Submit
-                    Section {
-                        Button("Save Catch") {
-                            submitForm()
+                        Spacer()
+                        if location != nil {
+                            Text("Marked location")
                         }
-                        .disabled(species.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                        
                     }
+                    // Date
+                    DatePicker("Date Caught",
+                               selection: $date,
+                               displayedComponents: [.date, .hourAndMinute])
                 }
-                .navigationTitle("Log Your Catch")
+                // Submit
+                Section {
+                    Button("Save Catch") {
+                        submitForm()
+                    }
+                    .disabled(species.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                    
+                }
             }
+            .navigationTitle("Log Your Catch")
         }
     }
     
@@ -92,15 +90,15 @@ struct LogFishView: View {
                  weight: weight,
                  latatude: location?.latitude,
                  longitude: location?.longitude,
-                 date: date))
+                 date: date,
+                 trip: nil))
         resetForm()
     }
     
     private func resetForm() {
-        showLocationPopover = false
         species = ""
-        length = 0.0
-        weight = 0.0
+        length = nil
+        weight = nil
         location = nil
         date = Date()
     }

@@ -7,7 +7,6 @@
 
 import Foundation
 import SwiftData
-import MapKit
 
 @Model
 class Fish {
@@ -18,19 +17,22 @@ class Fish {
     var longitude: Double?
     var date: Date
     var favourite: Bool = false
+    var trip: Trip?
     
     init(species: String,
          length: Double?,
          weight: Double?,
          latatude: Double?,
          longitude: Double?,
-         date: Date) {
+         date: Date,
+         trip: Trip?) {
         self.species = species
         self.length = length
         self.weight = weight
         self.latatude = latatude
         self.longitude = longitude
         self.date = date
+        self.trip = trip
     }
     
     func updateFavourite() {

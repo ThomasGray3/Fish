@@ -59,6 +59,7 @@ struct CatchListView: View {
                              weight: 6.3,
                              latatude: nil,
                              longitude: nil,
-                             date: Date()),
+                             date: Date(),
+                             trip: nil),
                   sort: .weight)
 }

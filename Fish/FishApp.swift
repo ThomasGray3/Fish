@@ -15,7 +15,7 @@ struct FishApp: App {
         WindowGroup {
             BaseTabView()
         }
-        .modelContainer(for: Fish.self)
+        .modelContainer(for: [Fish.self, Trip.self])
         .environment(locationManager)
     }
 }
