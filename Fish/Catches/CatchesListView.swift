@@ -25,6 +25,14 @@ struct CatchesListView: View {
         List {
             ForEach(catches) { fish in
                 CatchListView(fish: fish, sort: sort)
+                    .swipeActions(edge: .leading) {
+                        Button(action: {
+                            fish.updateFavourite()
+                        }) {
+                            Image(systemName: "star.fill")
+                        }
+                        .tint(.yellow)
+                    }
             }
             .onDelete { index in
                 deteleCatch(at: index)

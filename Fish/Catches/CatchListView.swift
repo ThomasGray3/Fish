@@ -12,22 +12,28 @@ struct CatchListView: View {
     @State var fish: Fish
     @State var sort: SortField
     
-
     var body: some View {
-        HStack(alignment: .lastTextBaseline) {
-            VStack(alignment: .leading) {
-                Text(fish.species)
-                Text(fish.date.string ?? "")
-                    .font(.footnote)
-                    .foregroundStyle(.gray)
+        HStack {
+            HStack(alignment: .lastTextBaseline) {
+                VStack(alignment: .leading) {
+                    Text(fish.species)
+                    Text(fish.date.string ?? "")
+                        .font(.footnote)
+                        .foregroundStyle(.gray)
+                }
+                Spacer()
+                
+                if let weight = fish.weight.value {
+                    DetailsView(imageName: "scalemass", detailText: weight.toString())
+                }
+                if let length = fish.length.value {
+                    DetailsView(imageName: "ruler", detailText: length.toString())
+                }
             }
-            Spacer()
 
-            if let weight = fish.weight.value {
-                DetailsView(imageName: "scalemass", detailText: weight.toString())
-            }
-            if let length = fish.length.value {
-                DetailsView(imageName: "ruler", detailText: length.toString())
+            if fish.favourite {
+                Image(systemName: "star.fill")
+                    .foregroundStyle(.yellow)
             }
         }
     }

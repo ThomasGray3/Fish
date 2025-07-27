@@ -17,6 +17,7 @@ class Fish {
     var latatude: Double?
     var longitude: Double?
     var date: Date
+    var favourite: Bool = false
     
     init(species: String, length: Measurement, weight: Measurement, latatude: Double?, longitude: Double?, date: Date) {
         self.species = species
@@ -25,6 +26,10 @@ class Fish {
         self.latatude = latatude
         self.longitude = longitude
         self.date = date
+    }
+    
+    func updateFavourite() {
+        favourite.toggle()
     }
     
     struct Measurement: Codable, Hashable, Comparable {
