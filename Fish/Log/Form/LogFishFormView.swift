@@ -49,7 +49,8 @@ struct LogFishFormView: View {
                     Button("Location") {
                         showLocationPopover.toggle()
                     }.sheet(isPresented: $showLocationPopover) {
-                        LocationView(showPopover: $showLocationPopover) { location in
+                        LocationView(savedLocation: viewModel.location,
+                                     showPopover: $showLocationPopover) { location in
                             viewModel.location = location
                         }
                     }
