@@ -65,7 +65,7 @@ struct LocationView: View {
                     .transition(.opacity)
                 }
             }
-            .navigationTitle("Add Location")
+            .navigationTitle(selectedLocation == nil ? "Add Location" : "Edit Location")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

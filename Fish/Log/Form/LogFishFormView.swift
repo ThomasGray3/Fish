@@ -13,7 +13,7 @@ struct LogFishFormView: View {
     @Environment(\.modelContext) var modelContext
     
     @State var viewModel: LogFishFormViewModel
-    @State private var showLocationPopover = false
+    @State private var showPopover = false
     
     var body: some View {
         Form {
@@ -47,10 +47,10 @@ struct LogFishFormView: View {
                 // Location
                 HStack {
                     Button("Location") {
-                        showLocationPopover.toggle()
-                    }.sheet(isPresented: $showLocationPopover) {
+                        showPopover.toggle()
+                    }.sheet(isPresented: $showPopover) {
                         LocationView(savedLocation: viewModel.location,
-                                     showPopover: $showLocationPopover) { location in
+                                     showPopover: $showPopover) { location in
                             viewModel.location = location
                         }
                     }
@@ -70,7 +70,6 @@ struct LogFishFormView: View {
                     viewModel.submitForm(modelContext: modelContext)
                 }
                 .disabled(!viewModel.formValid)
-                
             }
         }
     }

@@ -13,7 +13,7 @@ class Fish {
     var species: String
     var length: Double?
     var weight: Double?
-    var latatude: Double?
+    var latitude: Double?
     var longitude: Double?
     var date: Date
     var favourite: Bool = false
@@ -22,14 +22,14 @@ class Fish {
     init(species: String,
          length: Double?,
          weight: Double?,
-         latatude: Double?,
+         latitude: Double?,
          longitude: Double?,
          date: Date,
          trip: Trip?) {
         self.species = species
         self.length = length
         self.weight = weight
-        self.latatude = latatude
+        self.latitude = latitude
         self.longitude = longitude
         self.date = date
         self.trip = trip

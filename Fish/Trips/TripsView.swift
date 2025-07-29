@@ -12,6 +12,8 @@ struct TripsView: View {
     
     @Environment(\.modelContext) var modelContext
     
+    @State var showPopover = false
+
     @Query
     private var trips: [Trip]
     
@@ -33,11 +35,14 @@ struct TripsView: View {
             .toolbar {
                 ToolbarItem {
                     Button(action: {
-                        // Your action here (e.g. show sheet to add trip)
+                        showPopover.toggle()
                     }) {
                         Image(systemName: "plus")
                     }
                 }
+            }
+            .sheet(isPresented: $showPopover) {
+                TripFormView(viewModel: TripFormViewModel())
             }
         }
     }

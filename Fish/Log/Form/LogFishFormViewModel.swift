@@ -26,7 +26,7 @@ import SwiftData
             Fish(species: species,
                  length: length,
                  weight: weight,
-                 latatude: location?.latitude,
+                 latitude: location?.latitude,
                  longitude: location?.longitude,
                  date: date,
                  trip: nil))

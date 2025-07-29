@@ -36,8 +36,6 @@ struct CatchesView: View {
                     }
                 } label: {
                     Image(systemName: "arrow.up.arrow.down")
-                    Text(sortField.label)
-                        .font(.footnote)
                 }
             }
         }
