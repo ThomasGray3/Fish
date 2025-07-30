@@ -10,10 +10,12 @@ import MapKit
 
 struct LocationView: View {
     @Environment(LocationManager.self) var locationManager
+    @Environment(\.dismiss) var dismiss
+
     @State var cameraPosition: MapCameraPosition = .automatic
     @State var pinLocation: CLLocationCoordinate2D?
     @State var savedLocation: CLLocationCoordinate2D?
-    @Binding var showPopover: Bool
+    @State var disabledPins: [CLLocationCoordinate2D] = []
     var selectedLocation: CLLocationCoordinate2D? {
         pinLocation ?? savedLocation ?? locationManager.userLocation?.coordinate
     }
@@ -30,6 +32,15 @@ struct LocationView: View {
                     if let pin = pinLocation ?? savedLocation {
                         Marker("", coordinate: pin)
                     }
+                    if !disabledPins.isEmpty {
+                        ForEach(disabledPins.indices, id: \.self) { index in
+                            if (disabledPins[index].latitude != savedLocation?.latitude
+                                && disabledPins[index].longitude != savedLocation?.longitude) {
+                                Marker("Location \(index + 1)", coordinate: disabledPins[index])
+                                    .tint(.gray)
+                            }
+                        }
+                    }
                 }
                 .mapControls {
                     MapCompass()
@@ -41,13 +52,7 @@ struct LocationView: View {
                     }
                 }
                 .onAppear {
-                    if let savedLocation {
-                        cameraPosition = .region(MKCoordinateRegion(center: savedLocation,
-                                                                    span: .init(latitudeDelta: 0.01,
-                                                                                longitudeDelta: 0.01)))
-                    } else {
-                        cameraPosition = .userLocation(fallback: .automatic)
-                    }
+                   reset()
                 }
             }
             .safeAreaInset(edge: .bottom) {
@@ -55,7 +60,7 @@ struct LocationView: View {
                     HStack {
                         Spacer()
                         Button("Delete location") {
-                           dismiss(location: nil)
+                            close(location: nil)
                         }
                         .foregroundStyle(.red)
                         Spacer()
@@ -65,7 +70,7 @@ struct LocationView: View {
                     .transition(.opacity)
                 }
             }
-            .navigationTitle(selectedLocation == nil ? "Add Location" : "Edit Location")
+            .navigationTitle(savedLocation == nil ? "Add Location" : "Edit Location")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -76,7 +81,7 @@ struct LocationView: View {
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Save") {
-                        dismiss(location: selectedLocation)
+                        close(location: selectedLocation)
                     }
                     .disabled(selectedLocation == nil)
                 }
@@ -86,17 +91,19 @@ struct LocationView: View {
     
     private func reset() {
         pinLocation = nil
-        if let savedLocation {
+        if !disabledPins.isEmpty {
+            cameraPosition = .automatic
+        } else if let savedLocation {
             cameraPosition = .region(MKCoordinateRegion(center: savedLocation,
-                                                        span: .init(latitudeDelta: 0.01,
-                                                                    longitudeDelta: 0.01)))
+                                                        span: .init(latitudeDelta: 0.1,
+                                                                    longitudeDelta: 0.1)))
         } else {
             cameraPosition = .userLocation(fallback: .automatic)
         }
     }
     
-    private func dismiss(location: CLLocationCoordinate2D?) {
-        showPopover = false
+    private func close(location: CLLocationCoordinate2D?) {
         onDismiss(location)
+        dismiss()
     }
 }
