@@ -10,10 +10,10 @@ import SwiftUI
 
 struct TripFormView: View {
     
+    @Environment(\.dismiss) var dismiss
     @Environment(\.modelContext) var modelContext
     
     @State var viewModel: TripFormViewModel
-    @State var showPopover = false
     @State private var activeSheet: ActiveSheet?
     
     enum ActiveSheet: Identifiable {
@@ -50,10 +50,12 @@ struct TripFormView: View {
                         viewModel.locations.remove(atOffsets: indexSet)
                     }
                     
-                    Button {
-                        activeSheet = .addLocation
-                    } label: {
-                        Label("Add Stop", systemImage: "plus.circle")
+                    if viewModel.locations.count <= 5 {
+                        Button {
+                            activeSheet = .addLocation
+                        } label: {
+                            Label("Add Stop", systemImage: "plus.circle")
+                        }
                     }
                     // Date
                     DatePicker("Start Date",
@@ -73,7 +75,7 @@ struct TripFormView: View {
                 Section {
                     Button("Create Trip") {
                         viewModel.submitForm(modelContext: modelContext)
-                        showPopover = false
+                        dismiss()
                     }
                     .disabled(!viewModel.formValid)
                 }
