@@ -13,6 +13,7 @@ struct CatchesView: View {
     @State private var sortField: SortField = .date
     @State private var sortOrder: SortOrder = .forward
     @State private var searchText: String = ""
+    @State private var showPopover = false
     
     var body: some View {
         NavigationStack {
@@ -22,6 +23,11 @@ struct CatchesView: View {
             .navigationTitle("Catch log")
             .searchable(text: $searchText)
             .toolbar {
+                Button(action: {
+                    showPopover.toggle()
+                }) {
+                    Image(systemName: "plus")
+                }
                 Menu {
                     Picker("Sort", selection: $sortField) {
                         ForEach(SortField.allCases) { field in
@@ -37,6 +43,9 @@ struct CatchesView: View {
                 } label: {
                     Image(systemName: "arrow.up.arrow.down")
                 }
+            }
+            .sheet(isPresented: $showPopover) {
+                LogFishView()
             }
         }
     }

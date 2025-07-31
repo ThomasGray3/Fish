@@ -26,19 +26,24 @@ struct CatchesListView: View {
     var body: some View {
         List {
             ForEach(catches) { fish in
-                CatchListView(fish: fish, sort: sort)
-                    .swipeActions(edge: .leading) {
-                        Button(action: {
-                            fish.updateFavourite()
-                        }) {
-                            Image(systemName: "star.fill")
+                NavigationLink(value: fish) {
+                    CatchListView(fish: fish, sort: sort)
+                        .swipeActions(edge: .leading) {
+                            Button(action: {
+                                fish.updateFavourite()
+                            }) {
+                                Image(systemName: "star.fill")
+                            }
+                            .tint(.yellow)
                         }
-                        .tint(.yellow)
-                    }
+                }
             }
             .onDelete { index in
                 deteleCatch(at: index)
             }
+        }
+        .navigationDestination(for: Fish.self) { fish in
+            FishDetailsView(fish: fish)
         }
     }
     

@@ -9,6 +9,8 @@ import SwiftUI
 
 struct LogFishView: View {
     
+    @Environment(\.dismiss) var dismiss
+    
     var body: some View {
         NavigationStack {
             LogFishFormView(viewModel: LogFishFormViewModel())
