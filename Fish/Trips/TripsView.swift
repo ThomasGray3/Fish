@@ -28,6 +28,9 @@ struct TripsView: View {
                         ForEach(trips) { trip in
                             Text(trip.name)
                         }
+                        .onDelete { index in
+                            deleteTrip(at: index)
+                        }
                     }
                 }
             }
@@ -44,6 +47,13 @@ struct TripsView: View {
             .sheet(isPresented: $showPopover) {
                 TripFormView(viewModel: TripFormViewModel())
             }
+        }
+    }
+    
+    private func deleteTrip(at indexSet: IndexSet) {
+        for index in indexSet {
+            let trip = trips[index]
+            modelContext.delete(trip)
         }
     }
 }
