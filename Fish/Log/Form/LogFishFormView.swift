@@ -16,7 +16,6 @@ struct LogFishFormView: View {
     @State var viewModel: LogFishFormViewModel
     @State private var showPopover = false
     
-    
     var body: some View {
         Form {
             Section(header: Text("Fish Data")) {

@@ -11,11 +11,8 @@ import SwiftData
 struct TripsView: View {
     
     @Environment(\.modelContext) var modelContext
-    
     @State var showPopover = false
-
-    @Query
-    private var trips: [Trip]
+    @Query private var trips: [Trip]
     
     var body: some View {
         NavigationStack {

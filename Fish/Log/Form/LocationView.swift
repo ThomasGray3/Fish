@@ -51,9 +51,6 @@ struct LocationView: View {
                         pinLocation = coordinate
                     }
                 }
-                .onAppear {
-                   reset()
-                }
             }
             .safeAreaInset(edge: .bottom) {
                 if savedLocation != nil {
@@ -69,6 +66,9 @@ struct LocationView: View {
                     .background(.thinMaterial)
                     .transition(.opacity)
                 }
+            }
+            .onAppear {
+               reset()
             }
             .navigationTitle(savedLocation == nil ? "Add Location" : "Edit Location")
             .navigationBarTitleDisplayMode(.inline)
@@ -91,14 +91,16 @@ struct LocationView: View {
     
     private func reset() {
         pinLocation = nil
-        if !disabledPins.isEmpty {
-            cameraPosition = .automatic
-        } else if let savedLocation {
-            cameraPosition = .region(MKCoordinateRegion(center: savedLocation,
-                                                        span: .init(latitudeDelta: 0.1,
-                                                                    longitudeDelta: 0.1)))
-        } else {
-            cameraPosition = .userLocation(fallback: .automatic)
+        withAnimation {
+            if !disabledPins.isEmpty {
+                cameraPosition = .automatic
+            } else if let savedLocation {
+                cameraPosition = .region(MKCoordinateRegion(center: savedLocation,
+                                                            span: .init(latitudeDelta: 0.1,
+                                                                        longitudeDelta: 0.1)))
+            } else {
+                cameraPosition = .userLocation(fallback: .automatic)
+            }
         }
     }
     

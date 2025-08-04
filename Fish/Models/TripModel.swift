@@ -8,14 +8,13 @@
 import Foundation
 import SwiftData
 
-@Model
-class Trip {
+@Model class Trip {
     var name: String
     var startDate: Date
     var endDate: Date
 
-    @Relationship(deleteRule: .cascade)
-    var fish: [Fish] = []
+    @Relationship(deleteRule: .cascade) var fish: [Fish] = []
+    @Relationship(deleteRule: .nullify) var spots: [Spot] = []
     
     init(name: String,
          startDate: Date,

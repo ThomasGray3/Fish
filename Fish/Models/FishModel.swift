@@ -8,8 +8,7 @@
 import Foundation
 import SwiftData
 
-@Model
-class Fish {
+@Model class Fish {
     var species: String
     var length: Double?
     var weight: Double?

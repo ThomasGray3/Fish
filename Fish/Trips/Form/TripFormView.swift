@@ -24,10 +24,12 @@ struct TripFormView: View {
                     // Date
                     DatePicker("Start Date",
                                selection: $viewModel.startDate,
-                               displayedComponents: [.date])
+                               in: viewModel.startDate...,
+                               displayedComponents: .date)
                     DatePicker("End Date",
                                selection: $viewModel.endDate,
-                               in: viewModel.startDate..., displayedComponents: .date)
+                               in: viewModel.startDate...,
+                               displayedComponents: .date)
                 }
                 Section(header: Text("Pick a Colour")) {
                     ColorPicker("Event Colour",

@@ -6,13 +6,62 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct SpotsView: View {
+
+    @Environment(\.modelContext) var modelContext
+    @Query var spots: [Spot] = []
+    @State var showPopover = false
+
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        NavigationStack {
+            Group {
+                if spots.isEmpty {
+                    Text("No spots yet")
+                        .foregroundStyle(.gray)
+                } else {
+                    List {
+                        ForEach(spots) { trip in
+                            Text(trip.name)
+                        }
+                        .onDelete { index in
+                            deleteSpot(at: index)
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Spots")
+            .toolbar {
+                ToolbarItem {
+                    Button(action: {
+                        showPopover.toggle()
+                    }) {
+                        Image(systemName: "plus")
+                    }
+                }
+            }
+            .sheet(isPresented: $showPopover) {
+                LocationView() { location in
+                    modelContext.insert(
+                        Spot(name: "",
+                             latitude: 0,
+                             longitude: 0)
+                    )
+                }
+            }
+        }
+    }
+    
+    private func deleteSpot(at indexSet: IndexSet) {
+        for index in indexSet {
+            let trip = spots[index]
+            modelContext.delete(trip)
+        }
     }
 }
 
 #Preview {
     SpotsView()
+        .environment(LocationManager())
 }
