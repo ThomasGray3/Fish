@@ -25,9 +25,9 @@ struct LogFishFormView: View {
                 HStack {
                     Text("Length")
                     Spacer()
-                    TextField("",
+                    TextField("Enter length",
                               value: $viewModel.length,
-                              format: .number,
+                              format: .number.precision(.fractionLength(2)),
                               prompt: Text("0.0"))
                     .keyboardType(.decimalPad)
                     .multilineTextAlignment(.trailing)
@@ -37,37 +37,45 @@ struct LogFishFormView: View {
                 HStack {
                     Text("Weight")
                     Spacer()
-                    TextField("",
+                    TextField("Enter weight",
                               value: $viewModel.weight,
-                              format: .number,
+                              format: .number.precision(.fractionLength(2)),
                               prompt: Text("0.0"))
                     .keyboardType(.decimalPad)
                     .multilineTextAlignment(.trailing)
                     .padding(.trailing, 10)
                 }
-                // Location
+            }
+            
+            // Location
+            Section(header: Text("Location")) {
                 HStack {
                     Button("Location") {
                         showPopover.toggle()
                     }.sheet(isPresented: $showPopover) {
-                        LocationView(savedLocation: viewModel.location) { location in
-                            viewModel.location = location
+                        LocationView(pinLocation: viewModel.location) { location in
+                            viewModel.updateLocation(pinLocation: location)
                         }
                     }
-                    Spacer()
                     if viewModel.location != nil {
-                        Text("Marked location")
+                        TextField(viewModel.locationDefaultName,
+                                  text: $viewModel.locationName)
+                        .padding(.horizontal, 10)
+                        .multilineTextAlignment(.trailing)
                     }
                 }
-                // Date
+                if viewModel.location != nil {
+                    Toggle("Save location", isOn: $viewModel.saveLocation)
+                }
+            }
+
+            // Date
+            Section(header: Text("Date")) {
                 DatePicker("Date Caught",
                            selection: $viewModel.date,
                            displayedComponents: [.date, .hourAndMinute])
-            }
-            
-            if !suggestedTrips.isEmpty {
-                Section(header: Text("Are you on a planned trip?")) {
-                    Picker("Trip", selection: $viewModel.selectedTrip) {
+                if !suggestedTrips.isEmpty {
+                    Picker("Suggested Trip", selection: $viewModel.selectedTrip) {
                         Text("None").tag(Optional<Trip>(nil))
                         ForEach(suggestedTrips) { trip in
                             Text(trip.name).tag(trip)
@@ -76,6 +84,7 @@ struct LogFishFormView: View {
                     .pickerStyle(.menu)
                 }
             }
+
             // Submit
             Section {
                 Button("Save Catch") {

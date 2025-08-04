@@ -38,5 +38,6 @@ struct FishDetailsView: View {
                                latitude: 12.0,
                                longitude: 12.4,
                                date: .now,
-                               trip: nil))
+                               trip: nil,
+                               spot: nil))
 }

@@ -9,7 +9,7 @@ import Foundation
 
 extension Date {
 
-    var string: String? {
+    var string: String {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium
         formatter.timeStyle = .short

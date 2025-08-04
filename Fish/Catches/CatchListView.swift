@@ -17,7 +17,7 @@ struct CatchListView: View {
             HStack(alignment: .lastTextBaseline) {
                 VStack(alignment: .leading) {
                     Text(fish.species)
-                    Text(fish.date.string ?? "")
+                    Text(fish.date.string)
                         .font(.footnote)
                         .foregroundStyle(.gray)
                 }
@@ -60,6 +60,7 @@ struct CatchListView: View {
                              latitude: nil,
                              longitude: nil,
                              date: Date(),
-                             trip: nil),
+                             trip: nil,
+                             spot: nil),
                   sort: .weight)
 }

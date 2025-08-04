@@ -12,11 +12,10 @@ import SwiftData
     var species: String
     var length: Double?
     var weight: Double?
-    var latitude: Double?
-    var longitude: Double?
     var date: Date
     var favourite: Bool = false
     var trip: Trip?
+    var spot: Spot?
     
     init(species: String,
          length: Double?,
@@ -24,12 +23,12 @@ import SwiftData
          latitude: Double?,
          longitude: Double?,
          date: Date,
-         trip: Trip?) {
+         trip: Trip?,
+         spot: Spot?) {
         self.species = species
         self.length = length
         self.weight = weight
-        self.latitude = latitude
-        self.longitude = longitude
+        self.spot = spot
         self.date = date
         self.trip = trip
     }
