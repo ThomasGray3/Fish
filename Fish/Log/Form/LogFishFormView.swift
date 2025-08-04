@@ -7,13 +7,15 @@
 
 import SwiftUI
 import MapKit
+import SwiftData
 
 struct LogFishFormView: View {
     
     @Environment(\.modelContext) var modelContext
-    
+    @State private var suggestedTrips: [Trip] = []
     @State var viewModel: LogFishFormViewModel
     @State private var showPopover = false
+    
     
     var body: some View {
         Form {
@@ -63,6 +65,18 @@ struct LogFishFormView: View {
                            selection: $viewModel.date,
                            displayedComponents: [.date, .hourAndMinute])
             }
+            
+            if !suggestedTrips.isEmpty {
+                Section(header: Text("Are you on a planned trip?")) {
+                    Picker("Trip", selection: $viewModel.selectedTrip) {
+                        Text("None").tag(Optional<Trip>(nil))
+                        ForEach(suggestedTrips) { trip in
+                            Text(trip.name).tag(trip)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                }
+            }
             // Submit
             Section {
                 Button("Save Catch") {
@@ -70,6 +84,28 @@ struct LogFishFormView: View {
                 }
                 .disabled(!viewModel.formValid)
             }
+        }
+        .onChange(of: viewModel.date) {
+            loadSuggestedTrips()
+        }
+        .onAppear {
+            loadSuggestedTrips()
+        }
+    }
+    
+    private func loadSuggestedTrips() {
+        let calendar = Calendar.current
+        let startDate = calendar.date(byAdding: .day, value: -1, to: viewModel.date)!
+        let endDate = calendar.date(byAdding: .day, value: 1, to: viewModel.date)!
+
+        let predicate = #Predicate<Trip> { trip in
+            trip.startDate <= endDate && trip.endDate >= startDate
+        }
+        
+        do {
+            suggestedTrips = try modelContext.fetch(FetchDescriptor(predicate: predicate))
+        } catch {
+            suggestedTrips = []
         }
     }
 }

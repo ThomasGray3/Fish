@@ -9,8 +9,7 @@ import CoreLocation
 import MapKit
 import SwiftUI
 
-@Observable
-class LocationManager: NSObject, CLLocationManagerDelegate {
+@Observable class LocationManager: NSObject, CLLocationManagerDelegate {
     @ObservationIgnored private let manager = CLLocationManager()
     var cameraPosition: MapCameraPosition = .userLocation(fallback: .automatic)
     var userLocation: CLLocation?

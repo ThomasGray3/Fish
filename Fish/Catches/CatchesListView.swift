@@ -13,8 +13,7 @@ struct CatchesListView: View {
     @Environment(\.modelContext) var modelContext
     @State private var sort: SortField
 
-    @Query
-    private var catches: [Fish]
+    @Query private var catches: [Fish]
     
     init(sort: SortField, order: SortOrder, search: String) {
         self.sort = sort

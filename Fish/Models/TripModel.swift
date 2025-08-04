@@ -11,20 +11,17 @@ import SwiftData
 @Model
 class Trip {
     var name: String
-    var latitude: [Double] = []
-    var longitude: [Double] = []
-    var date: Date
+    var startDate: Date
+    var endDate: Date
 
     @Relationship(deleteRule: .cascade)
     var fish: [Fish] = []
     
     init(name: String,
-         latitude: [Double],
-         longitude: [Double],
-         date: Date) {
+         startDate: Date,
+         endDate: Date) {
         self.name = name
-        self.latitude = latitude
-        self.longitude = longitude
-        self.date = date
+        self.startDate = startDate
+        self.endDate = endDate
     }
 }

@@ -16,6 +16,7 @@ import SwiftData
     var weight: Double?
     var location: CLLocationCoordinate2D?
     var date: Date = Date()
+    var selectedTrip: Trip?
     
     var formValid: Bool {
         !species.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
@@ -29,7 +30,7 @@ import SwiftData
                  latitude: location?.latitude,
                  longitude: location?.longitude,
                  date: date,
-                 trip: nil))
+                 trip: selectedTrip))
         resetForm()
     }
     
@@ -39,5 +40,6 @@ import SwiftData
         weight = nil
         location = nil
         date = Date()
+        selectedTrip = nil
     }
 }

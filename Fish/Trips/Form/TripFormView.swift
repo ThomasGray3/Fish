@@ -14,49 +14,13 @@ struct TripFormView: View {
     @Environment(\.modelContext) var modelContext
     
     @State var viewModel: TripFormViewModel
-    @State private var activeSheet: ActiveSheet?
-    
-    enum ActiveSheet: Identifiable {
-        case editLocation(index: Int)
-        case addLocation
-        
-        var id: String {
-            switch self {
-            case .editLocation(let index):
-                return "edit_\(index)"
-            case .addLocation:
-                return "add"
-            }
-        }
-    }
     
     var body: some View {
         NavigationStack {
             Form {
                 Section(header: Text("Create Trip")) {
-                    // Species
+                    // Name
                     TextField("Trip Name", text: $viewModel.name)
-                    // Location
-                    ForEach(viewModel.locations.indices, id: \.self) { index in
-                        HStack {
-                            Button("Location \(index + 1)") {
-                                activeSheet = .editLocation(index: index)
-                            }
-                            Spacer()
-                            Text("Marked location")
-                        }
-                    }
-                    .onDelete { indexSet in
-                        viewModel.locations.remove(atOffsets: indexSet)
-                    }
-                    
-                    if viewModel.locations.count <= 5 {
-                        Button {
-                            activeSheet = .addLocation
-                        } label: {
-                            Label("Add Stop", systemImage: "plus.circle")
-                        }
-                    }
                     // Date
                     DatePicker("Start Date",
                                selection: $viewModel.startDate,
@@ -80,26 +44,6 @@ struct TripFormView: View {
                     .disabled(!viewModel.formValid)
                 }
             }
-            .sheet(item: $activeSheet) { sheet in
-                    switch sheet {
-                    case .editLocation(let index):
-                        LocationView(savedLocation: viewModel.locations[index],
-                                     disabledPins: viewModel.locations) { location in
-                            if let location {
-                                viewModel.locations[index] = location
-                            } else {
-                                viewModel.locations.remove(at: index)
-                            }
-                        }
-
-                    case .addLocation:
-                        LocationView(disabledPins: viewModel.locations) { location in
-                            if let location {
-                                viewModel.locations.append(location)
-                            }
-                        }
-                    }
-                }
             .navigationTitle("Add trip")
             .navigationBarTitleDisplayMode(.inline)
         }
