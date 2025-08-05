@@ -35,8 +35,6 @@ struct FishDetailsView: View {
     FishDetailsView(fish: Fish(species: "Trout",
                                length: 12.2,
                                weight: 0.5,
-                               latitude: 12.0,
-                               longitude: 12.4,
                                date: .now,
                                trip: nil,
                                spot: nil))

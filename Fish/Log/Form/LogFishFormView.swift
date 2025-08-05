@@ -12,6 +12,7 @@ import SwiftData
 struct LogFishFormView: View {
     
     @Environment(\.modelContext) var modelContext
+    @Query var spots: [Spot]
     @State private var suggestedTrips: [Trip] = []
     @State var viewModel: LogFishFormViewModel
     @State private var showPopover = false
@@ -25,39 +26,51 @@ struct LogFishFormView: View {
                 HStack {
                     Text("Length")
                     Spacer()
-                    TextField("Enter length",
+                    TextField("Enter Length",
                               value: $viewModel.length,
                               format: .number.precision(.fractionLength(2)),
                               prompt: Text("0.0"))
                     .keyboardType(.decimalPad)
                     .multilineTextAlignment(.trailing)
-                    .padding(.trailing, 10)
+                    .padding(.horizontal, 10)
                 }
                 // Weight
                 HStack {
                     Text("Weight")
                     Spacer()
-                    TextField("Enter weight",
+                    TextField("Enter Weight",
                               value: $viewModel.weight,
                               format: .number.precision(.fractionLength(2)),
                               prompt: Text("0.0"))
                     .keyboardType(.decimalPad)
                     .multilineTextAlignment(.trailing)
-                    .padding(.trailing, 10)
+                    .padding(.horizontal, 10)
                 }
             }
             
-            // Location
-            Section(header: Text("Location")) {
-                HStack {
-                    Button("Location") {
-                        showPopover.toggle()
-                    }.sheet(isPresented: $showPopover) {
-                        LocationView(pinLocation: viewModel.location) { location in
-                            viewModel.updateLocation(pinLocation: location)
+            // Spot
+            Section(header: Text("Spot")) {
+                if viewModel.location == nil {
+                    Picker("Spot", selection: $viewModel.spot) {
+                        Text("None").tag(Optional<Spot>(nil))
+                        ForEach(spots) { spot in
+                            Text(spot.name).tag(spot)
                         }
                     }
-                    if viewModel.location != nil {
+                    .pickerStyle(.navigationLink)
+                }
+                // New Spot
+                Button(viewModel.location == nil ? "Add New Spot" : "Edit Spot") {
+                    showPopover.toggle()
+                }.sheet(isPresented: $showPopover) {
+                    LocationView(pinLocation: viewModel.location) { location in
+                        viewModel.updateLocation(pinLocation: location)
+                    }
+                }
+                if viewModel.location != nil {
+                    HStack {
+                        Text("Spot Name")
+                        Spacer()
                         TextField(viewModel.locationDefaultName,
                                   text: $viewModel.locationName)
                         .padding(.horizontal, 10)
@@ -65,7 +78,7 @@ struct LogFishFormView: View {
                     }
                 }
                 if viewModel.location != nil {
-                    Toggle("Save location", isOn: $viewModel.saveLocation)
+                    Toggle("Save Location", isOn: $viewModel.saveLocation)
                 }
             }
 
@@ -103,9 +116,11 @@ struct LogFishFormView: View {
     
     private func loadSuggestedTrips() {
         let calendar = Calendar.current
-        let startDate = calendar.date(byAdding: .day, value: -1, to: viewModel.date)!
-        let endDate = calendar.date(byAdding: .day, value: 1, to: viewModel.date)!
-
+        guard let startDate = calendar.date(byAdding: .day, value: -1, to: viewModel.date),
+              let endDate = calendar.date(byAdding: .day, value: 1, to: viewModel.date) else {
+            return suggestedTrips = []
+        }
+        
         let predicate = #Predicate<Trip> { trip in
             trip.startDate <= endDate && trip.endDate >= startDate
         }

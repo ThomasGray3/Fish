@@ -16,9 +16,10 @@ import SwiftData
     var weight: Double?
     var location: CLLocationCoordinate2D?
     var locationName: String = ""
-    var locationDefaultName = "Marked Location"
+    var locationDefaultName = ""
     var date: Date = Date()
     var selectedTrip: Trip?
+    var spot: Spot? = nil
     var saveLocation = true
     
     var formValid: Bool {
@@ -27,7 +28,7 @@ import SwiftData
     
     func submitForm(modelContext: ModelContext) {
         let spot = location.map {
-            Spot(name: locationName,
+            Spot(name: locationName.isEmpty ? locationDefaultName : locationName,
                  latitude: $0.latitude,
                  longitude: $0.longitude)
         }
@@ -38,8 +39,6 @@ import SwiftData
             Fish(species: species,
                  length: length,
                  weight: weight,
-                 latitude: location?.latitude,
-                 longitude: location?.longitude,
                  date: date,
                  trip: selectedTrip,
                  spot: spot))
@@ -47,8 +46,7 @@ import SwiftData
     }
     
     func updateLocation(pinLocation: CLLocationCoordinate2D?) {
-        if (location?.latitude != pinLocation?.latitude
-            && location?.longitude != pinLocation?.longitude) {
+        if location != pinLocation {
             location = pinLocation
             Task {
                 locationDefaultName = await fetchLocationName()
@@ -77,5 +75,9 @@ import SwiftData
         location = nil
         date = Date()
         selectedTrip = nil
+        spot = nil
+        locationName = ""
+        locationDefaultName = ""
+        saveLocation = true
     }
 }

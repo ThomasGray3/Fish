@@ -20,8 +20,6 @@ import SwiftData
     init(species: String,
          length: Double?,
          weight: Double?,
-         latitude: Double?,
-         longitude: Double?,
          date: Date,
          trip: Trip?,
          spot: Spot?) {

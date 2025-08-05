@@ -57,8 +57,6 @@ struct CatchListView: View {
     CatchListView(fish: Fish(species: "Trout",
                              length: 50.4,
                              weight: 6.3,
-                             latitude: nil,
-                             longitude: nil,
                              date: Date(),
                              trip: nil,
                              spot: nil),
