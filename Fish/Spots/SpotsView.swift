@@ -42,12 +42,10 @@ struct SpotsView: View {
                 }
             }
             .sheet(isPresented: $showPopover) {
-                LocationView() { location in
-                    modelContext.insert(
-                        Spot(name: "",
-                             latitude: 0,
-                             longitude: 0)
-                    )
+                AddSpotView() { spot in
+                    if let spot {
+                        modelContext.insert(spot)
+                    }
                 }
             }
         }

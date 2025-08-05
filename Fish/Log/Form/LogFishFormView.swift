@@ -16,6 +16,9 @@ struct LogFishFormView: View {
     @State private var suggestedTrips: [Trip] = []
     @State var viewModel: LogFishFormViewModel
     @State private var showPopover = false
+    private var showSpotPicker: Bool {
+        viewModel.newSpot == nil
+    }
     
     var body: some View {
         Form {
@@ -50,34 +53,26 @@ struct LogFishFormView: View {
             
             // Spot
             Section(header: Text("Spot")) {
-                if viewModel.location == nil {
-                    Picker("Spot", selection: $viewModel.spot) {
+                if showSpotPicker {
+                    Picker("Spot", selection: $viewModel.existingSpot) {
                         Text("None").tag(Optional<Spot>(nil))
                         ForEach(spots) { spot in
-                            Text(spot.name).tag(spot)
+                            Text(spot.name).tag(Optional(spot))
                         }
                     }
                     .pickerStyle(.navigationLink)
                 }
                 // New Spot
-                Button(viewModel.location == nil ? "Add New Spot" : "Edit Spot") {
+                Button(showSpotPicker
+                       ? "Add New Spot"
+                       : viewModel.newSpot?.name ?? "New Spot") {
                     showPopover.toggle()
                 }.sheet(isPresented: $showPopover) {
-                    LocationView(pinLocation: viewModel.location) { location in
-                        viewModel.updateLocation(pinLocation: location)
+                    AddSpotView(spot: viewModel.newSpot) { spot in
+                        viewModel.newSpot = spot
                     }
                 }
-                if viewModel.location != nil {
-                    HStack {
-                        Text("Spot Name")
-                        Spacer()
-                        TextField(viewModel.locationDefaultName,
-                                  text: $viewModel.locationName)
-                        .padding(.horizontal, 10)
-                        .multilineTextAlignment(.trailing)
-                    }
-                }
-                if viewModel.location != nil {
+                if !showSpotPicker {
                     Toggle("Save Location", isOn: $viewModel.saveLocation)
                 }
             }

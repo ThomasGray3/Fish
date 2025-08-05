@@ -1,5 +1,5 @@
 //
-//  LocationView.swift
+//  AddSpotView.swift
 //  Fish
 //
 //  Created by Thomas Gray on 15/07/2025.
@@ -8,28 +8,32 @@
 import SwiftUI
 import MapKit
 
-struct LocationView: View {
+struct AddSpotView: View {
     @Environment(LocationManager.self) var locationManager
     @Environment(\.dismiss) var dismiss
 
-    @State var cameraPosition: MapCameraPosition = .automatic
-    @State var pinLocation: CLLocationCoordinate2D?
-    @State private var savedLocation: CLLocationCoordinate2D?
+    @State var spot: Spot?
+    @State private var showAlert = false
+    @State private var cameraPosition: MapCameraPosition = .automatic
+    @State private var pinLocation: CLLocationCoordinate2D?
+    @State private var spotName = ""
     var selectedLocation: CLLocationCoordinate2D? {
-        pinLocation ?? savedLocation ?? locationManager.userLocation?.coordinate
+        pinLocation ?? locationManager.userLocation?.coordinate
     }
     
-    var onDismiss: (CLLocationCoordinate2D?) -> Void
+    var onDismiss: (Spot?) -> Void
     
     var body: some View {
         NavigationStack {
             MapReader { proxy in
                 Map(position: $cameraPosition) {
-                    if savedLocation == nil {
+                    if spot == nil {
                         UserAnnotation()
                     }
-                    if let pin = pinLocation ?? savedLocation {
+                    if let pin = pinLocation {
                         Marker("", coordinate: pin)
+                    } else if let spot {
+                        Marker(spot.name, coordinate: spot.location)
                     }
                 }
                 .mapControls {
@@ -43,10 +47,23 @@ struct LocationView: View {
                 }
             }
             .onAppear {
-                savedLocation = pinLocation
                 reset()
             }
-            .navigationTitle(savedLocation == nil ? "Add Location" : "Edit Location")
+            .alert("Name This Spot", isPresented: $showAlert) {
+                TextField("Enter a name",
+                          text: $spotName)
+                Button("Save") {
+                    if let selectedLocation {
+                        let spot = Spot(name: spotName,
+                                        latitude: selectedLocation.latitude,
+                                        longitude: selectedLocation.longitude)
+                        close(spot: spot)
+                    }
+                }
+                .disabled(spotName.isEmpty)
+                Button("Cancel", role: .cancel) {}
+            }
+            .navigationTitle(spot == nil ? "Add Location" : "Edit Location")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -55,17 +72,17 @@ struct LocationView: View {
                     }
                     .disabled(pinLocation == nil)
                 }
-                if savedLocation != nil {
+                if spot != nil {
                     ToolbarItem(placement: .destructiveAction) {
                         Button("Delete") {
-                            close(location: nil)
+                            close(spot: nil)
                         }
                         .foregroundStyle(.red)
                     }
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
-                        close(location: selectedLocation)
+                        showAlert = true
                     }
                     .disabled(selectedLocation == nil)
                 }
@@ -74,20 +91,23 @@ struct LocationView: View {
     }
     
     private func reset() {
-        pinLocation = nil
         withAnimation {
-            if let savedLocation {
-                cameraPosition = .region(MKCoordinateRegion(center: savedLocation,
-                                                            span: .init(latitudeDelta: 0.1,
-                                                                        longitudeDelta: 0.1)))
+            if let spot {
+                cameraPosition = .region(
+                    MKCoordinateRegion(
+                        center: CLLocationCoordinate2D(latitude: spot.latitude, longitude: spot.longitude),
+                        span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                    )
+                )
             } else {
+                pinLocation = nil
                 cameraPosition = .userLocation(fallback: .automatic)
             }
         }
     }
     
-    private func close(location: CLLocationCoordinate2D?) {
-        onDismiss(location)
+    private func close(spot: Spot?) {
+        onDismiss(spot)
         dismiss()
     }
 }
