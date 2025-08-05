@@ -15,7 +15,7 @@ import SwiftData
     var date: Date
     var favourite: Bool = false
     var trip: Trip?
-    var spot: Spot?
+    @Relationship(deleteRule: .nullify) var spot: Spot?
     
     init(species: String,
          length: Double?,

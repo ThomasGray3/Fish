@@ -32,16 +32,13 @@ import SwiftData
                  latitude: $0.latitude,
                  longitude: $0.longitude)
         }
-        if let spot {
-            modelContext.insert(spot)
-        }
         modelContext.insert(
             Fish(species: species,
                  length: length,
                  weight: weight,
                  date: date,
                  trip: selectedTrip,
-                 spot: spot))
+                 spot: saveLocation ? spot : nil))
         resetForm()
     }
     
