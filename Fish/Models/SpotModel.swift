@@ -14,13 +14,17 @@ import CoreLocation
     var latitude: Double
     var longitude: Double
     
-    var location: CLLocationCoordinate2D {
-        CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
+    var location: CLLocation {
+        CLLocation(latitude: latitude, longitude: longitude)
     }
     
     init(name: String, latitude: Double, longitude: Double) {
         self.name = name
         self.latitude = latitude
         self.longitude = longitude
+    }
+    
+    func distanceTo(userLocation: CLLocation) -> Double {
+        return location.distance(from: userLocation) / 1000
     }
 }

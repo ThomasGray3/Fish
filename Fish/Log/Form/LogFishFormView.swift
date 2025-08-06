@@ -10,14 +10,24 @@ import MapKit
 import SwiftData
 
 struct LogFishFormView: View {
-    
+    @Environment(LocationManager.self) var locationManager
     @Environment(\.modelContext) var modelContext
-    @Query var spots: [Spot]
+    @Query(sort: [SortDescriptor(\Spot.name)]) var spots: [Spot]
     @State private var suggestedTrips: [Trip] = []
     @State var viewModel: LogFishFormViewModel
     @State private var showPopover = false
     private var showSpotPicker: Bool {
         viewModel.newSpot == nil
+    }
+    private var sortedSpots: [Spot] {
+        spots.sorted {
+            if let userLocation = locationManager.userLocation {
+                return ($0.location.distance(from: userLocation)
+                        < $1.location.distance(from: userLocation))
+            } else {
+                return true
+            }
+        }
     }
     
     var body: some View {
@@ -56,8 +66,17 @@ struct LogFishFormView: View {
                 if showSpotPicker {
                     Picker("Spot", selection: $viewModel.existingSpot) {
                         Text("None").tag(Optional<Spot>(nil))
-                        ForEach(spots) { spot in
-                            Text(spot.name).tag(Optional(spot))
+                        ForEach(sortedSpots) { spot in
+                            HStack {
+                                Text(spot.name)
+                                if let location = locationManager.userLocation {
+                                    Spacer()
+                                    Text(spot.distanceTo(userLocation: location).toString() + "km")
+                                        .foregroundStyle(.gray)
+                                        .font(.footnote)
+                                }
+                            }
+                            .tag(spot)
                         }
                     }
                     .pickerStyle(.navigationLink)

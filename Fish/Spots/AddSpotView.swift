@@ -33,7 +33,7 @@ struct AddSpotView: View {
                     if let pin = pinLocation {
                         Marker("", coordinate: pin)
                     } else if let spot {
-                        Marker(spot.name, coordinate: spot.location)
+                        Marker(spot.name, coordinate: spot.location.coordinate)
                     }
                 }
                 .mapControls {
