@@ -23,30 +23,35 @@ struct CatchesListView: View {
     }
 
     var body: some View {
-        List {
-            ForEach(catches) { fish in
-                NavigationLink(value: fish) {
-                    CatchListView(fish: fish, sort: sort)
-                        .swipeActions(edge: .leading) {
-                            Button(action: {
-                                fish.updateFavourite()
-                            }) {
-                                Image(systemName: "star.fill")
+        if catches.isEmpty {
+            Text("No catches")
+                .foregroundStyle(.gray)
+        } else {
+            List {
+                ForEach(catches) { fish in
+                    NavigationLink(value: fish) {
+                        CatchListView(fish: fish, sort: sort)
+                            .swipeActions(edge: .leading) {
+                                Button(action: {
+                                    fish.updateFavourite()
+                                }) {
+                                    Image(systemName: "star.fill")
+                                }
+                                .tint(.yellow)
                             }
-                            .tint(.yellow)
-                        }
+                    }
+                }
+                .onDelete { index in
+                    deleteCatch(at: index)
                 }
             }
-            .onDelete { index in
-                deteleCatch(at: index)
+            .navigationDestination(for: Fish.self) { fish in
+                FishDetailsView(fish: fish)
             }
-        }
-        .navigationDestination(for: Fish.self) { fish in
-            FishDetailsView(fish: fish)
         }
     }
     
-    private func deteleCatch(at indexSet: IndexSet) {
+    private func deleteCatch(at indexSet: IndexSet) {
         for index in indexSet {
             let fish = catches[index]
             modelContext.delete(fish)

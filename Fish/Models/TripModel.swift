@@ -9,6 +9,7 @@ import Foundation
 import SwiftData
 
 @Model class Trip {
+    var id = UUID()
     var name: String
     var startDate: Date
     var endDate: Date

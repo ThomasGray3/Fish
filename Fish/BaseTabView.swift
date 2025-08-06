@@ -27,7 +27,7 @@ struct BaseTabView: View {
                 }
             SpotsView()
                 .tabItem {
-                    Image(systemName: "mappin.circle")
+                    Image(systemName: "mappin")
                     Text("Spots")
                 }
             TripsView()
@@ -41,4 +41,5 @@ struct BaseTabView: View {
 
 #Preview {
     BaseTabView()
+        .environment(LocationManager())
 }

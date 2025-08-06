@@ -9,29 +9,15 @@ import SwiftUI
 import SwiftData
 
 struct TripsView: View {
-    
-    @Environment(\.modelContext) var modelContext
-    @State var showPopover = false
-    @Query private var trips: [Trip]
-    
+
+    @State private var showPopover = false
+    @State private var searchText: String = ""
+
     var body: some View {
         NavigationStack {
-            Group {
-                if trips.isEmpty {
-                    Text("No trips yet")
-                        .foregroundStyle(.gray)
-                } else {
-                    List {
-                        ForEach(trips) { trip in
-                            Text(trip.name)
-                        }
-                        .onDelete { index in
-                            deleteTrip(at: index)
-                        }
-                    }
-                }
-            }
+            TripsListView(search: searchText)
             .navigationTitle("Trips")
+            .searchable(text: $searchText)
             .toolbar {
                 ToolbarItem {
                     Button(action: {
@@ -44,13 +30,6 @@ struct TripsView: View {
             .sheet(isPresented: $showPopover) {
                 TripFormView(viewModel: TripFormViewModel())
             }
-        }
-    }
-    
-    private func deleteTrip(at indexSet: IndexSet) {
-        for index in indexSet {
-            let trip = trips[index]
-            modelContext.delete(trip)
         }
     }
 }

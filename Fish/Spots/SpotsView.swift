@@ -11,27 +11,14 @@ import SwiftData
 struct SpotsView: View {
 
     @Environment(\.modelContext) var modelContext
-    @Query var spots: [Spot] = []
-    @State var showPopover = false
+    @State private var showPopover = false
+    @State private var searchText: String = ""
 
     var body: some View {
         NavigationStack {
-            Group {
-                if spots.isEmpty {
-                    Text("No spots yet")
-                        .foregroundStyle(.gray)
-                } else {
-                    List {
-                        ForEach(spots) { trip in
-                            Text(trip.name)
-                        }
-                        .onDelete { index in
-                            deleteSpot(at: index)
-                        }
-                    }
-                }
-            }
+            SpotsListView(search: searchText)
             .navigationTitle("Spots")
+            .searchable(text: $searchText)
             .toolbar {
                 ToolbarItem {
                     Button(action: {
@@ -48,13 +35,6 @@ struct SpotsView: View {
                     }
                 }
             }
-        }
-    }
-    
-    private func deleteSpot(at indexSet: IndexSet) {
-        for index in indexSet {
-            let trip = spots[index]
-            modelContext.delete(trip)
         }
     }
 }

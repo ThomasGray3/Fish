@@ -10,6 +10,7 @@ import SwiftData
 import CoreLocation
 
 @Model class Spot {
+    var id = UUID()
     var name: String
     var latitude: Double
     var longitude: Double

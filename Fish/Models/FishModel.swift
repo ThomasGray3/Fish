@@ -9,6 +9,7 @@ import Foundation
 import SwiftData
 
 @Model class Fish {
+    var id = UUID()
     var species: String
     var length: Double?
     var weight: Double?
