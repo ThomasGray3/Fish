@@ -14,6 +14,7 @@ struct TripFormView: View {
     @Environment(\.modelContext) var modelContext
     
     @State var viewModel: TripFormViewModel
+    @State private var showPopover = false
     
     var body: some View {
         NavigationStack {
@@ -31,6 +32,17 @@ struct TripFormView: View {
                                in: viewModel.startDate...,
                                displayedComponents: .date)
                 }
+                // Spots
+                Section(header: Text("Spot")) {
+                    Button("Add Spot") {
+                        showPopover.toggle()
+                    }.fullScreenCover(isPresented: $showPopover) {
+                        AddSpotView() { spot in
+
+                        }
+                    }
+                }
+                // Colour
                 Section(header: Text("Pick a Colour")) {
                     ColorPicker("Event Colour",
                                 selection: $viewModel.selectedColor,

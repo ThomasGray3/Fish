@@ -14,6 +14,7 @@ struct AddSpotView: View {
 
     @State var spot: Spot?
     @State private var showAlert = false
+    @State private var showPopover = true
     @State private var cameraPosition: MapCameraPosition = .automatic
     @State private var pinLocation: CLLocationCoordinate2D?
     @State private var spotName = ""
@@ -46,6 +47,14 @@ struct AddSpotView: View {
                     }
                 }
             }
+            .sheet(isPresented: $showPopover) {
+                SelectSpotView()
+                    .presentationDetents([.height(115), .medium, .large])
+                    .presentationBackgroundInteraction(.enabled)
+                    .presentationCornerRadius(20)
+                    .presentationDragIndicator(.visible)
+                    .interactiveDismissDisabled()
+            }
             .onAppear {
                 reset()
             }
@@ -61,16 +70,17 @@ struct AddSpotView: View {
                     }
                 }
                 .disabled(spotName.isEmpty)
-                Button("Cancel", role: .cancel) {}
+                Button("Cancel", role: .cancel) {
+                    showPopover = true
+                }
             }
             .navigationTitle(spot == nil ? "Add Location" : "Edit Location")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Reset") {
-                        reset()
+                    Button("Cancel") {
+                        dismiss()
                     }
-                    .disabled(pinLocation == nil)
                 }
                 if spot != nil {
                     ToolbarItem(placement: .destructiveAction) {
