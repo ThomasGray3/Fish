@@ -34,11 +34,19 @@ struct TripFormView: View {
                 }
                 // Spots
                 Section(header: Text("Spot")) {
+                    ForEach(viewModel.spots) { spot in
+                        Text(spot.name)
+                    }
+                    .onDelete { index in
+                        viewModel.spots.remove(atOffsets: index)
+                    }
                     Button("Add Spot") {
                         showPopover.toggle()
-                    }.fullScreenCover(isPresented: $showPopover) {
+                    }.sheet(isPresented: $showPopover) {
                         AddSpotView() { spot in
-
+                            if let spot {
+                                viewModel.spots.append(spot)
+                            }
                         }
                     }
                 }

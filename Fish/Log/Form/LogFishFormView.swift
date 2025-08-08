@@ -10,26 +10,12 @@ import MapKit
 import SwiftData
 
 struct LogFishFormView: View {
-    @Environment(LocationManager.self) var locationManager
+
     @Environment(\.modelContext) var modelContext
-    @Query(sort: [SortDescriptor(\Spot.name)]) var spots: [Spot]
-    @State private var suggestedTrips: [Trip] = []
     @State var viewModel: LogFishFormViewModel
-    @State private var showPopover = false
-    private var showSpotPicker: Bool {
-        viewModel.newSpot == nil
-    }
-    private var sortedSpots: [Spot] {
-        spots.sorted {
-            if let userLocation = locationManager.userLocation {
-                return ($0.location.distance(from: userLocation)
-                        < $1.location.distance(from: userLocation))
-            } else {
-                return true
-            }
-        }
-    }
-    
+    @State private var suggestedTrips: [Trip] = []
+    @State private var showAddSpotSheet = false
+
     var body: some View {
         Form {
             Section(header: Text("Fish Data")) {
@@ -63,36 +49,21 @@ struct LogFishFormView: View {
             
             // Spot
             Section(header: Text("Spot")) {
-                if showSpotPicker {
-                    Picker("Spot", selection: $viewModel.existingSpot) {
-                        Text("None").tag(Optional<Spot>(nil))
-                        ForEach(sortedSpots) { spot in
-                            HStack {
-                                Text(spot.name)
-                                if let location = locationManager.userLocation {
-                                    Spacer()
-                                    Text(spot.distanceTo(userLocation: location).toString() + "km")
-                                        .foregroundStyle(.gray)
-                                        .font(.footnote)
-                                }
+                HStack {
+                    if let spot = viewModel.spot {
+                        Text(spot.name)
+                            .foregroundStyle(.gray)
+                        Spacer()
+                    }
+                    Button(viewModel.spot == nil ? "Add Spot" : "Edit Spot") {
+                        showAddSpotSheet.toggle()
+                    }.fullScreenCover(isPresented: $showAddSpotSheet) {
+                        AddSpotView(spot: viewModel.spot) { spot in
+                            if let spot {
+                                viewModel.spot = spot
                             }
-                            .tag(spot)
                         }
                     }
-                    .pickerStyle(.navigationLink)
-                }
-                // New Spot
-                Button(showSpotPicker
-                       ? "Add New Spot"
-                       : viewModel.newSpot?.name ?? "New Spot") {
-                    showPopover.toggle()
-                }.sheet(isPresented: $showPopover) {
-                    AddSpotView(spot: viewModel.newSpot) { spot in
-                        viewModel.newSpot = spot
-                    }
-                }
-                if !showSpotPicker {
-                    Toggle("Save Location", isOn: $viewModel.saveLocation)
                 }
             }
 

@@ -16,10 +16,10 @@ struct AddSpotView: View {
     @State private var showAlert = false
     @State private var showPopover = true
     @State private var cameraPosition: MapCameraPosition = .automatic
-    @State private var pinLocation: CLLocationCoordinate2D?
     @State private var spotName = ""
+    @State private var sheetPosition: PresentationDetent = .height(115)
     var selectedLocation: CLLocationCoordinate2D? {
-        pinLocation ?? locationManager.userLocation?.coordinate
+        spot?.location.coordinate ?? locationManager.userLocation?.coordinate
     }
     
     var onDismiss: (Spot?) -> Void
@@ -31,10 +31,9 @@ struct AddSpotView: View {
                     if spot == nil {
                         UserAnnotation()
                     }
-                    if let pin = pinLocation {
-                        Marker("", coordinate: pin)
-                    } else if let spot {
-                        Marker(spot.name, coordinate: spot.location.coordinate)
+                    if let spot {
+                        Marker(spot.name.isEmpty ? "New Marker" : spot.name,
+                               coordinate: spot.location.coordinate)
                     }
                 }
                 .mapControls {
@@ -43,22 +42,28 @@ struct AddSpotView: View {
                 }
                 .onTapGesture { position in
                     if let coordinate = proxy.convert(position, from: .local) {
-                        pinLocation = coordinate
+                        let pinLocation = coordinate
+                        spot = Spot(name: "",
+                                    latitude: pinLocation.latitude,
+                                    longitude: pinLocation.longitude)
                     }
                 }
             }
             .sheet(isPresented: $showPopover) {
-                SelectSpotView()
-                    .presentationDetents([.height(115), .medium, .large])
+                SelectSpotView() { savedSpot in
+                    spot = savedSpot
+                    resetCamera()
+                }
+                    .presentationDetents([.height(115), .medium, .large], selection: $sheetPosition)
                     .presentationBackgroundInteraction(.enabled)
                     .presentationCornerRadius(20)
                     .presentationDragIndicator(.visible)
                     .interactiveDismissDisabled()
             }
             .onAppear {
-                reset()
+                resetCamera()
             }
-            .alert("Name This Spot", isPresented: $showAlert) {
+            .alert("New Spot", isPresented: $showAlert) {
                 TextField("Enter a name",
                           text: $spotName)
                 Button("Save") {
@@ -74,7 +79,7 @@ struct AddSpotView: View {
                     showPopover = true
                 }
             }
-            .navigationTitle(spot == nil ? "Add Location" : "Edit Location")
+            .navigationTitle("Select Location")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -82,17 +87,13 @@ struct AddSpotView: View {
                         dismiss()
                     }
                 }
-                if spot != nil {
-                    ToolbarItem(placement: .destructiveAction) {
-                        Button("Delete") {
-                            close(spot: nil)
-                        }
-                        .foregroundStyle(.red)
-                    }
-                }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
-                        showAlert = true
+                    Button("Select") {
+                        if let spot, !spot.name.isEmpty {
+                            close(spot: spot)
+                        } else {
+                            showAlert = true
+                        }
                     }
                     .disabled(selectedLocation == nil)
                 }
@@ -100,17 +101,17 @@ struct AddSpotView: View {
         }
     }
     
-    private func reset() {
+    private func resetCamera() {
         withAnimation {
+            sheetPosition = .height(115)
             if let spot {
                 cameraPosition = .region(
                     MKCoordinateRegion(
                         center: CLLocationCoordinate2D(latitude: spot.latitude, longitude: spot.longitude),
-                        span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                        span: MKCoordinateSpan(latitudeDelta: 0.02, longitudeDelta: 0.02)
                     )
                 )
             } else {
-                pinLocation = nil
                 cameraPosition = .userLocation(fallback: .automatic)
             }
         }

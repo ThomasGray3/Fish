@@ -16,6 +16,7 @@ import SwiftUI
     var startDate: Date = Date()
     var endDate: Date = Calendar.current.date(byAdding: .day, value: 1, to: Date()) ?? Date()
     var selectedColor: Color = .blue
+    var spots: [Spot] = []
 
     var formValid: Bool {
         !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty

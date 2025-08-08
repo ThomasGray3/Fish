@@ -16,13 +16,7 @@ import SwiftData
     var weight: Double?
     var date: Date = Date()
     var selectedTrip: Trip?
-    var existingSpot: Spot?
-    var newSpot: Spot? {
-        didSet {
-            existingSpot = nil
-        }
-    }
-    var saveLocation = true
+    var spot: Spot?
     
     var formValid: Bool {
         !species.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
@@ -35,7 +29,7 @@ import SwiftData
                  weight: weight,
                  date: date,
                  trip: selectedTrip,
-                 spot: saveLocation ? newSpot ?? existingSpot : nil))
+                 spot: spot))
         resetForm()
     }
     
@@ -45,8 +39,6 @@ import SwiftData
         weight = nil
         date = Date()
         selectedTrip = nil
-        newSpot = nil
-        existingSpot = nil
-        saveLocation = true
+        spot = nil
     }
 }
